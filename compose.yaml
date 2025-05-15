@@ -1,0 +1,22 @@
+services:
+
+  mcp-github:
+    image: ghcr.io/github/github-mcp-server:latest
+    container_name: mcp-github
+    restart: unless-stopped
+    environment:
+      GITHUB_PERSONAL_ACCESS_TOKEN: ${GITHUB_PERSONAL_ACCESS_TOKEN}
+    stdin_open: true
+    tty: true
+
+  mcp-atlassian-confluence:
+    image: ghcr.io/sooperset/mcp-atlassian:latest
+    container_name: mcp-atlassian-confluence
+    restart: unless-stopped
+    ports:
+      - "37462:8000"
+    environment:
+      CONFLUENCE_URL: ${CONFLUENCE_URL}
+      CONFLUENCE_PERSONAL_TOKEN: ${CONFLUENCE_PERSONAL_TOKEN}
+      MCP_VERBOSE: true
+    command: ["--transport", "sse"]

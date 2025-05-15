@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "mcp-atlassian-confluence": {
+      "transport": "sse",
+      "url": "http://localhost:37462/sse"
+    }
+  }
+}

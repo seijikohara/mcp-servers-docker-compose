@@ -1,0 +1,9 @@
+# .gitignore for Docker Compose and config management
+.env
+*.bak
+*.tmp
+*.log
+.DS_Store
+.idea/
+.vscode/
+Thumbs.db

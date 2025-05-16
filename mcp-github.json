@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "github": {
+    "mcp-github": {
       "transport": "stdio",
       "command": "docker",
       "args": [

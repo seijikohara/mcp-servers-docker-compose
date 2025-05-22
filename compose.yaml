@@ -1,5 +1,16 @@
 services:
 
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    restart: unless-stopped
+    ports:
+      - "26439:8080"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      - open-webui-data:/app/backend/data
+
   mcp-github:
     image: ghcr.io/github/github-mcp-server:latest
     container_name: mcp-github
@@ -28,7 +39,9 @@ services:
     environment:
       SLACK_BOT_TOKEN: ${SLACK_BOT_TOKEN}
       SLACK_TEAM_ID: ${SLACK_TEAM_ID}
-      SLACK_CHANNEL_IDS: ${SLACK_CHANNEL_IDS}
       MCP_VERBOSE: true
     stdin_open: true
     tty: true
+
+volumes:
+  open-webui-data:

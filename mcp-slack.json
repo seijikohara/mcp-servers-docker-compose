@@ -1,15 +1,8 @@
 {
   "mcpServers": {
     "mcp-slack": {
-      "transport": "stdio",
-      "command": "docker",
-      "args": [
-        "exec",
-        "-i",
-        "mcp-slack",
-        "node",
-        "/app/dist/index.js"
-      ]
+      "transport": "sse",
+      "url": "http://localhost:27489/sse"
     }
   }
 }

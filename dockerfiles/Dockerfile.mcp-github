@@ -1,0 +1,4 @@
+# ...existing code...
+FROM node:lts-slim
+RUN npm install -g mcp-proxy @modelcontextprotocol/server-github
+CMD ["mcp-proxy", "mcp-server-github", "--debug=true"]

@@ -12,13 +12,15 @@ services:
       - open-webui-data:/app/backend/data
 
   mcp-github:
-    image: ghcr.io/github/github-mcp-server:latest
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.mcp-github
     container_name: mcp-github
     restart: unless-stopped
+    ports:
+      - "32649:8080"
     environment:
       GITHUB_PERSONAL_ACCESS_TOKEN: ${GITHUB_PERSONAL_ACCESS_TOKEN}
-    stdin_open: true
-    tty: true
 
   mcp-atlassian-confluence:
     image: ghcr.io/sooperset/mcp-atlassian:latest
@@ -33,15 +35,17 @@ services:
     command: ["--transport", "sse"]
 
   mcp-slack:
-    image: mcp/slack:latest
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.mcp-slack
     container_name: mcp-slack
     restart: unless-stopped
+    ports:
+      - "27489:8080"
     environment:
       SLACK_BOT_TOKEN: ${SLACK_BOT_TOKEN}
       SLACK_TEAM_ID: ${SLACK_TEAM_ID}
       MCP_VERBOSE: true
-    stdin_open: true
-    tty: true
 
 volumes:
   open-webui-data:

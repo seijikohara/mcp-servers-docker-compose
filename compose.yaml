@@ -1,15 +1,35 @@
 services:
 
-  open-webui:
-    image: ghcr.io/open-webui/open-webui:main
-    container_name: open-webui
+  mcp-client-chatbot:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.mcp-client-chatbot
+    container_name: mcp-client-chatbot
     restart: unless-stopped
     ports:
-      - "26439:8080"
+      - "26439:3000"
     environment:
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      POSTGRES_URL: "postgres://chatbot-user:chatbot-password@mcp-client-chatbot-postgres:5432/chatbot"
+      FILE_BASED_MCP_CONFIG: "true"
     volumes:
-      - open-webui-data:/app/backend/data
+      - ./mcp-client-chatbot/mcp-config.json:/app/.mcp-config.json:ro
+    depends_on:
+      - mcp-client-chatbot-postgres
+      - mcp-github
+      - mcp-atlassian-confluence
+      - mcp-slack
+
+  mcp-client-chatbot-postgres:
+    image: postgres:17
+    container_name: mcp-client-chatbot-postgres
+    volumes:
+      - mcp-client-chatbot-postgres-volume:/var/lib/postgresql/data
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: chatbot-user
+      POSTGRES_PASSWORD: chatbot-password
+      POSTGRES_DB: chatbot
 
   mcp-github:
     build:
@@ -48,4 +68,4 @@ services:
       MCP_VERBOSE: true
 
 volumes:
-  open-webui-data:
+  mcp-client-chatbot-postgres-volume:

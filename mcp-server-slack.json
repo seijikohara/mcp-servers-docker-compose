@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "mcp-slack": {
+    "mcp-server-slack": {
       "transport": "sse",
       "url": "http://localhost:27489/sse"
     }

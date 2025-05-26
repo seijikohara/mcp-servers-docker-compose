@@ -1,10 +1,10 @@
 services:
 
   mcp-client-chatbot:
+    container_name: mcp-client-chatbot
     build:
       context: .
       dockerfile: dockerfiles/Dockerfile.mcp-client-chatbot
-    container_name: mcp-client-chatbot
     restart: unless-stopped
     ports:
       - "26439:3000"
@@ -16,56 +16,57 @@ services:
       - ./mcp-client-chatbot/mcp-config.json:/app/.mcp-config.json:ro
     depends_on:
       - mcp-client-chatbot-postgres
-      - mcp-github
-      - mcp-atlassian-confluence
-      - mcp-slack
+      - mcp-server-atlassian
+      - mcp-server-github
+      - mcp-server-slack
 
   mcp-client-chatbot-postgres:
-    image: postgres:17
     container_name: mcp-client-chatbot-postgres
-    volumes:
-      - mcp-client-chatbot-postgres-volume:/var/lib/postgresql/data
+    image: postgres:17
     restart: unless-stopped
     environment:
       POSTGRES_USER: chatbot-user
       POSTGRES_PASSWORD: chatbot-password
       POSTGRES_DB: chatbot
+    volumes:
+      - mcp-client-chatbot-postgres-volume:/var/lib/postgresql/data
 
-  mcp-github:
+  mcp-server-atlassian:
+    container_name: mcp-server-atlassian
+    image: ghcr.io/sooperset/mcp-atlassian:latest
+    restart: unless-stopped
+    ports:
+      - "37462:8000"
+    environment:
+      JIRA_URL: ${JIRA_URL}
+      JIRA_PERSONAL_TOKEN: ${JIRA_PERSONAL_TOKEN}
+      CONFLUENCE_URL: ${CONFLUENCE_URL}
+      CONFLUENCE_PERSONAL_TOKEN: ${CONFLUENCE_PERSONAL_TOKEN}
+      MCP_VERBOSE: true
+    command: ["--transport", "sse"]
+
+  mcp-server-github:
+    container_name: mcp-server-github
     build:
       context: .
-      dockerfile: dockerfiles/Dockerfile.mcp-github
-    container_name: mcp-github
+      dockerfile: dockerfiles/Dockerfile.mcp-server-github
     restart: unless-stopped
     ports:
       - "32649:8080"
     environment:
       GITHUB_PERSONAL_ACCESS_TOKEN: ${GITHUB_PERSONAL_ACCESS_TOKEN}
 
-  mcp-atlassian-confluence:
-    image: ghcr.io/sooperset/mcp-atlassian:latest
-    container_name: mcp-atlassian-confluence
-    restart: unless-stopped
-    ports:
-      - "37462:8000"
-    environment:
-      CONFLUENCE_URL: ${CONFLUENCE_URL}
-      CONFLUENCE_PERSONAL_TOKEN: ${CONFLUENCE_PERSONAL_TOKEN}
-      MCP_VERBOSE: true
-    command: ["--transport", "sse"]
-
-  mcp-slack:
+  mcp-server-slack:
+    container_name: mcp-server-slack
     build:
       context: .
-      dockerfile: dockerfiles/Dockerfile.mcp-slack
-    container_name: mcp-slack
+      dockerfile: dockerfiles/Dockerfile.mcp-server-slack
     restart: unless-stopped
     ports:
       - "27489:8080"
     environment:
       SLACK_BOT_TOKEN: ${SLACK_BOT_TOKEN}
       SLACK_TEAM_ID: ${SLACK_TEAM_ID}
-      MCP_VERBOSE: true
 
 volumes:
   mcp-client-chatbot-postgres-volume:

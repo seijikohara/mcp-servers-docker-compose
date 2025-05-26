@@ -1,14 +1,14 @@
 {
-  "mcp-github": {
+  "mcp-server-atlassian": {
     "transport": "sse",
-    "url": "http://mcp-github:8080/sse"
+    "url": "http://mcp-server-atlassian:8000/sse"
   },
-  "mcp-atlassian-confluence": {
+  "mcp-server-github": {
     "transport": "sse",
-    "url": "http://mcp-atlassian-confluence:8000/sse"
+    "url": "http://mcp-server-github:8080/sse"
   },
-  "mcp-slack": {
+  "mcp-server-slack": {
     "transport": "sse",
-    "url": "http://mcp-slack:8080/sse"
+    "url": "http://mcp-server-slack:8080/sse"
   }
 }
